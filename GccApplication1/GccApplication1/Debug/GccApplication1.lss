@@ -1,0 +1,133 @@
+
+GccApplication1.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000000bc  00000000  00000000  00000054  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000000  00800060  00800060  00000110  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .comment      00000030  00000000  00000000  00000110  2**0
+                  CONTENTS, READONLY
+  3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000140  2**2
+                  CONTENTS, READONLY
+  4 .debug_aranges 00000048  00000000  00000000  0000017c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_info   00000646  00000000  00000000  000001c4  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_abbrev 0000059d  00000000  00000000  0000080a  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_line   00000209  00000000  00000000  00000da7  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_frame  00000058  00000000  00000000  00000fb0  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_str    0000030b  00000000  00000000  00001008  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_loc    000000e8  00000000  00000000  00001313  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_ranges 00000028  00000000  00000000  000013fb  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0c 94 2a 00 	jmp	0x54	; 0x54 <__ctors_end>
+   4:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+   8:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+   c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  10:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  14:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  18:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  1c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  20:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  24:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  28:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  2c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  30:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  34:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  38:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  3c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  40:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  44:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  48:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  4c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  50:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+
+00000054 <__ctors_end>:
+  54:	11 24       	eor	r1, r1
+  56:	1f be       	out	0x3f, r1	; 63
+  58:	cf e5       	ldi	r28, 0x5F	; 95
+  5a:	d8 e0       	ldi	r29, 0x08	; 8
+  5c:	de bf       	out	0x3e, r29	; 62
+  5e:	cd bf       	out	0x3d, r28	; 61
+  60:	0e 94 36 00 	call	0x6c	; 0x6c <main>
+  64:	0c 94 5c 00 	jmp	0xb8	; 0xb8 <_exit>
+
+00000068 <__bad_interrupt>:
+  68:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+
+0000006c <main>:
+#include "DIO_INT.h"
+
+int main(void)
+{
+    
+    set_pin_val(DIO_PINA1,DIO_HIGH);
+  6c:	61 e0       	ldi	r22, 0x01	; 1
+  6e:	81 e0       	ldi	r24, 0x01	; 1
+  70:	0e 94 3d 00 	call	0x7a	; 0x7a <set_pin_val>
+	
+}
+  74:	80 e0       	ldi	r24, 0x00	; 0
+  76:	90 e0       	ldi	r25, 0x00	; 0
+  78:	08 95       	ret
+
+0000007a <set_pin_val>:
+#include "DIO_INT.h"
+#include "BIT_MATH.h"
+void set_pin_val(u8 p_n,u8 level)
+{
+	if(level==DIO_HIGH)
+  7a:	61 30       	cpi	r22, 0x01	; 1
+  7c:	69 f4       	brne	.+26     	; 0x98 <set_pin_val+0x1e>
+	{
+		SET_BIT(PORTA,p_n);	
+  7e:	4b b3       	in	r20, 0x1b	; 27
+  80:	21 e0       	ldi	r18, 0x01	; 1
+  82:	30 e0       	ldi	r19, 0x00	; 0
+  84:	b9 01       	movw	r22, r18
+  86:	02 c0       	rjmp	.+4      	; 0x8c <set_pin_val+0x12>
+  88:	66 0f       	add	r22, r22
+  8a:	77 1f       	adc	r23, r23
+  8c:	8a 95       	dec	r24
+  8e:	e2 f7       	brpl	.-8      	; 0x88 <set_pin_val+0xe>
+  90:	cb 01       	movw	r24, r22
+  92:	84 2b       	or	r24, r20
+  94:	8b bb       	out	0x1b, r24	; 27
+  96:	08 95       	ret
+	}
+	else if(level==DIO_LOW)
+  98:	61 11       	cpse	r22, r1
+  9a:	0d c0       	rjmp	.+26     	; 0xb6 <set_pin_val+0x3c>
+	{
+		CLEAR_BIT(PORTA,p_n);
+  9c:	4b b3       	in	r20, 0x1b	; 27
+  9e:	21 e0       	ldi	r18, 0x01	; 1
+  a0:	30 e0       	ldi	r19, 0x00	; 0
+  a2:	b9 01       	movw	r22, r18
+  a4:	02 c0       	rjmp	.+4      	; 0xaa <set_pin_val+0x30>
+  a6:	66 0f       	add	r22, r22
+  a8:	77 1f       	adc	r23, r23
+  aa:	8a 95       	dec	r24
+  ac:	e2 f7       	brpl	.-8      	; 0xa6 <set_pin_val+0x2c>
+  ae:	cb 01       	movw	r24, r22
+  b0:	80 95       	com	r24
+  b2:	84 23       	and	r24, r20
+  b4:	8b bb       	out	0x1b, r24	; 27
+  b6:	08 95       	ret
+
+000000b8 <_exit>:
+  b8:	f8 94       	cli
+
+000000ba <__stop_program>:
+  ba:	ff cf       	rjmp	.-2      	; 0xba <__stop_program>
